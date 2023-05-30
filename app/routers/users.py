@@ -16,6 +16,8 @@ from ..db.database import get_db
 router = APIRouter(
     prefix="/users",
     tags=["Users"],
+    
+    # halfassed attempt to get the image to show up
 )
 
 
