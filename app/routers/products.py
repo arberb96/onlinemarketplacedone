@@ -64,6 +64,75 @@ def get_product_by_category(id: int, db: Session = Depends(get_db)):
     
     return products
 
+@router.get("/search={search}")
+def get_product_by_search(
+    search_string: str, 
+    db: Session = Depends(get_db),
+    current_user: int = Depends(oauth2.get_current_user)
+):
+    
+    products_query = (
+        db.query(models.Product)
+        .filter(models.Product.product_title.ilike(f"%{search_string}%"), models.Product.owner_id == current_user.user_id)
+    )
+    
+    products = products_query.all()
+    
+    if products == None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Product with title {search_string} not found"
+        )
+    else:
+        return {"data": products}
+
+
+@router.put("/{id}")
+def update_product(
+    id: int, 
+    updated_product: schemas.ProductCreate,
+    db: Session = Depends(get_db), 
+    current_user: int = Depends(oauth2.get_current_user)
+    ):
+
+    product_query = db.query(models.Product).filter(models.Product.id == id)
+    
+    product = product_query.first()
+    
+    if product == None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Product with id {id} not found"
+        )
+    
+    product_query.update(
+        updated_product.dict(),
+        synchronize_session=False
+    )
+    
+    db.commit()
+    
+    return {"data": product_query.first()}
+
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_product(id: int, db: Session = Depends(get_db), current_user: int=Depends(oauth2.get_current_user)):
+    
+    product = db.query(models.Product).filter(models.Product.id == id)
+    
+    if product.first() == None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Post with id {id} not found"
+        )
+        
+    product.delete(synchronize_session=False)
+    db.commit()
+    
+    # my_posts.pop(index)
+    
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    
+
 # Needs to be fixed
 @router.post(f"/upload-product-picture", status_code=status.HTTP_201_CREATED)
 def upload_product_picture(

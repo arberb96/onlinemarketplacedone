@@ -44,6 +44,10 @@ class TokenData(BaseModel):
     user_id: Optional[int] = None
 
 
+class CategoryBase(BaseModel):
+    category_name: str
+    category_description: str
+    
 class CategoryCreate(BaseModel):
     category_name: str
     category_description: str

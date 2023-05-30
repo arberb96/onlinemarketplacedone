@@ -30,16 +30,8 @@ app.include_router(carts.router)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
-@app.get("/")
+@app.get("/healthcheck")
 async def root():
-    return {"message": "Hello !"}
-
-    return HtmlREs
+    return {"message": "Hello World!"}
 
 "uvicorn app.main:app --reload"
-
-# @app.get("/features")
-# async def root():
-#     from fastapi import redirect
-    
-#     return redirect("/")

@@ -266,7 +266,7 @@ token = login_user(users["arber"])
 # get_products(token)
 # get_product_by_category(token, 1)
 
-add_product_to_cart(token, 1, 1)
+add_product_to_cart(token, 1, 4)
 
 print("DEBUG!")
 # get_products(token)

@@ -54,9 +54,8 @@ class Cart(Base):
     
     cart_id = Column(Integer, primary_key=True, nullable=False)
     date = Column(TIMESTAMP(timezone=True), server_default=text('now()'))
-
-    #desc = Column(String)
     owner_id = Column(Integer, ForeignKey('users.user_id'), nullable=False)
+    
     user = relationship('User')
 
 
